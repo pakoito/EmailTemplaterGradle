@@ -132,6 +132,7 @@ public class Main extends Application {
         emailGrid.setHgap(10);
         emailGrid.setPadding(new Insets(30, 30, 0, 30));
         emailField = new TextField();
+        emailField.setPadding(new Insets(0, 200, 0, 0));
         emailGrid.add(new Label("From Email"), 0, 0);
         emailGrid.add(emailField, 1, 0);
         final javafx.scene.control.Button spitButton = new javafx.scene.control.Button(
