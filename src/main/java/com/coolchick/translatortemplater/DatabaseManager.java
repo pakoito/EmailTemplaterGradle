@@ -98,16 +98,14 @@ public class DatabaseManager {
         TableView<Translator> table = new TableView<Translator>();
         TableColumn firstNameCol = new TableColumn("Name");
         firstNameCol.setMinWidth(100);
-        firstNameCol.setCellValueFactory(
-                new PropertyValueFactory<Translator, String>("name"));
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<Translator, String>("name"));
         TableColumn secondEmailCol = new TableColumn("Email");
         secondEmailCol.setMinWidth(100);
-        secondEmailCol.setCellValueFactory(
-                new PropertyValueFactory<Translator, String>("email"));
+        secondEmailCol.setCellValueFactory(new PropertyValueFactory<Translator, String>("email"));
         TableColumn thirdLangCol = new TableColumn("Languages");
         thirdLangCol.setMinWidth(100);
-        thirdLangCol.setCellValueFactory(
-                new PropertyValueFactory<Translator, List<String>>("languages"));
+        thirdLangCol.setCellValueFactory(new PropertyValueFactory<Translator, List<String>>(
+                "languages"));
         table.setItems(translatorObservableList);
         table.getColumns().addAll(firstNameCol, secondEmailCol, thirdLangCol);
         final javafx.scene.control.Button openButton = new javafx.scene.control.Button(
@@ -123,9 +121,11 @@ public class DatabaseManager {
                 if (file != null) {
                     ObjectMapper mapper = new ObjectMapper();
                     try {
-                        Set<String> names = new HashSet<String>();
                         TranslatorDatabase database = mapper.readValue(file,
                                 TranslatorDatabase.class);
+                        mTranslators.clear();
+                        mLanguages.clear();
+                        Set<String> names = new HashSet<String>();
                         for (Translator translator : database.getTranslators()) {
                             mTranslators.add(translator);
                             names.add(translator.getName());
@@ -136,8 +136,7 @@ public class DatabaseManager {
                         mLanguages.addAll(database.getAllLanguages());
                         TextFields.bindAutoCompletion(languageFilter, mLanguages);
                         TextFields.bindAutoCompletion(nameFilter, names);
-                        getTranslatorsForFilter("", translatorObservableList,
-                                translatorsTarget);
+                        getTranslatorsForFilter("", translatorObservableList, translatorsTarget);
                     } catch (IOException e1) {
                         showErrorDialog(stage, "Bad translator database");
                     }
@@ -188,12 +187,10 @@ public class DatabaseManager {
         return pane;
     }
 
-    private void getTranslatorsForName(String text,
-                                         ObservableList<Translator> translators) {
+    private void getTranslatorsForName(String text, ObservableList<Translator> translators) {
         translators.clear();
         for (Translator translator : mTranslators) {
-            if (text == null
-                    || text.equalsIgnoreCase("")
+            if (text == null || text.equalsIgnoreCase("")
                     || (translator.getName().toLowerCase().contains(text.toLowerCase()))) {
                 translators.add(translator);
             }
@@ -213,8 +210,8 @@ public class DatabaseManager {
         });
     }
 
-    private void getTranslatorsForFilter(String textField,
-            ObservableList<Translator> translators, ObservableList<Translator> translatorsTarget) {
+    private void getTranslatorsForFilter(String textField, ObservableList<Translator> translators,
+            ObservableList<Translator> translatorsTarget) {
         translators.clear();
         for (Translator translator : mTranslators) {
             if (textField == null

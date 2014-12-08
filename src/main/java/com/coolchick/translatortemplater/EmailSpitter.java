@@ -1,3 +1,4 @@
+
 package com.coolchick.translatortemplater;
 
 import com.coolchick.translatortemplater.model.Translator;
@@ -39,12 +40,10 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
- * Created by Paco on 08/12/2014.
- * See LICENSE.md
+ * Created by Paco on 08/12/2014. See LICENSE.md
  */
 // TODO FIXME class -.-
 public class EmailSpitter {
-
     private ArrayList<Translator> mTranslators;
 
     private HashSet<String> mLanguages;
@@ -66,7 +65,8 @@ public class EmailSpitter {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setResources(ResourceBundle
                 .getBundle("com.coolchick.translatortemplater.theResources"));
-        StackPane pane = fxmlLoader.load(EmailSpitter.class.getResource("theScene.fxml").openStream());
+        StackPane pane = fxmlLoader.load(EmailSpitter.class.getResource("theScene.fxml")
+                .openStream());
         pane.setPadding(new Insets(10, 10, 10, 10));
         mTranslators = new ArrayList<Translator>();
         mLanguages = new HashSet<String>();
@@ -118,6 +118,8 @@ public class EmailSpitter {
                     try {
                         TranslatorDatabase database = mapper.readValue(file,
                                 TranslatorDatabase.class);
+                        mTranslators.clear();
+                        mLanguages.clear();
                         for (Translator translator : database.getTranslators()) {
                             mTranslators.add(translator);
                             for (String language : translator.getLanguages()) {
@@ -165,7 +167,7 @@ public class EmailSpitter {
                         String from = emailField.getText();
                         if (from != null && !"".equalsIgnoreCase(from)) {
                             message.addFrom(new Address[] {
-                                    new InternetAddress()
+                                new InternetAddress()
                             });
                         }
                         message.addRecipients(Message.RecipientType.BCC, addresses);
@@ -195,13 +197,13 @@ public class EmailSpitter {
     }
 
     private void getTranslatorsForFilter(TextField textField,
-                                         ObservableList<Translator> translators, ObservableList<Translator> translatorsTarget) {
+            ObservableList<Translator> translators, ObservableList<Translator> translatorsTarget) {
         translators.clear();
         for (Translator translator : mTranslators) {
             if (textField.getText() == null
                     || textField.getText().equalsIgnoreCase("")
                     || (translator.getLanguages().contains(textField.getText()) && !translatorsTarget
-                    .contains(translator))) {
+                            .contains(translator))) {
                 translators.add(translator);
             }
         }
@@ -221,13 +223,13 @@ public class EmailSpitter {
     }
 
     private void geLanguageForFilter(TextField textField, ObservableList<String> languages,
-                                     ObservableList<String> languagesTarget) {
+            ObservableList<String> languagesTarget) {
         languages.clear();
         for (String language : mLanguages) {
             if (textField.getText() == null
                     || textField.getText().equalsIgnoreCase("")
                     || (textField.getText().equalsIgnoreCase(language) && !languagesTarget
-                    .contains(language))) {
+                            .contains(language))) {
                 languages.add(language);
             }
         }
