@@ -110,12 +110,6 @@ public class DatabaseManager {
                 new PropertyValueFactory<Translator, List<String>>("languages"));
         table.setItems(translatorObservableList);
         table.getColumns().addAll(firstNameCol, secondEmailCol, thirdLangCol);
-//        final ListSelectionView<Translator> listSelectionView = new ListSelectionView<Translator>();
-//        listSelectionView.setSourceItems(translatorObservableList);
-//        listSelectionView.setTargetItems(translatorsTarget);
-//        final ListSelectionView<String> languagesSelection = new ListSelectionView<String>();
-//        languagesSelection.setSourceItems(languagesObservableList);
-//        languagesSelection.setTargetItems(languagesTarget);
         final javafx.scene.control.Button openButton = new javafx.scene.control.Button(
                 "Load JSON database...");
         openButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -234,32 +228,6 @@ public class DatabaseManager {
             @Override
             public int compare(Translator o1, Translator o2) {
                 int compare = o1.getName().compareToIgnoreCase(o2.getName());
-                if (compare < 0) {
-                    return -1;
-                } else if (compare > 0) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-    }
-
-    private void geLanguageForFilter(TextField textField, ObservableList<String> languages,
-            ObservableList<String> languagesTarget) {
-        languages.clear();
-        for (String language : mLanguages) {
-            if (textField.getText() == null
-                    || textField.getText().equalsIgnoreCase("")
-                    || (textField.getText().equalsIgnoreCase(language) && !languagesTarget
-                            .contains(language))) {
-                languages.add(language);
-            }
-        }
-        languages.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                int compare = o1.compareToIgnoreCase(o2);
                 if (compare < 0) {
                     return -1;
                 } else if (compare > 0) {
