@@ -18,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -61,6 +60,7 @@ public class Main extends Application {
         fxmlLoader.setResources(ResourceBundle
                 .getBundle("com.coolchick.translatortemplater.theResources"));
         StackPane pane = fxmlLoader.load(this.getClass().getResource("theScene.fxml").openStream());
+        pane.setPadding(new Insets(10, 10, 10, 10));
         mTranslators = new ArrayList<Translator>();
         mLanguages = new HashSet<String>();
         translatorObservableList = FXCollections.observableArrayList();
@@ -72,7 +72,7 @@ public class Main extends Application {
         GridPane filterGrid = new GridPane();
         filterGrid.setVgap(10);
         filterGrid.setHgap(10);
-        filterGrid.setPadding(new Insets(30, 30, 0, 30));
+        filterGrid.setPadding(new Insets(30, 60, 0, 30));
         final TextField textField = new TextField();
         filterGrid.add(new Label("Language filter"), 0, 0);
         filterGrid.add(textField, 1, 0);
@@ -90,7 +90,6 @@ public class Main extends Application {
                 }
             }
         });
-        GridPane.setHgrow(textField, Priority.ALWAYS);
         final ListSelectionView<Translator> listSelectionView = new ListSelectionView<Translator>();
         listSelectionView.setSourceItems(translatorObservableList);
         listSelectionView.setTargetItems(translatorsTarget);
@@ -130,9 +129,8 @@ public class Main extends Application {
         GridPane emailGrid = new GridPane();
         emailGrid.setVgap(10);
         emailGrid.setHgap(10);
-        emailGrid.setPadding(new Insets(30, 30, 0, 30));
         emailField = new TextField();
-        emailField.setPadding(new Insets(0, 200, 0, 0));
+        emailField.setPadding(new Insets(5, 200, 5, 0));
         emailGrid.add(new Label("From Email"), 0, 0);
         emailGrid.add(emailField, 1, 0);
         final javafx.scene.control.Button spitButton = new javafx.scene.control.Button(
@@ -184,11 +182,10 @@ public class Main extends Application {
         children.add(languagesSelection);
         children.add(emailGrid);
         children.add(spitButton);
-        final Scene scene = new Scene(pane);
+        final Scene scene = new Scene(pane, 800, 600);
         scene.getStylesheets().setAll(getClass().getResource("theStyles.css").toExternalForm());
         primaryStage.setTitle("Hello Cel");
         primaryStage.setScene(scene);
-        primaryStage.sizeToScene();
         primaryStage.show();
     }
 
