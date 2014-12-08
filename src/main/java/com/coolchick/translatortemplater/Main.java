@@ -15,9 +15,9 @@ public class Main extends Application {
         mEmailSpitterScene = new Scene(new EmailSpitter().getRoot(primaryStage), 800, 600);
         mDatabaseManagerScene = new Scene(new DatabaseManager().getRoot(primaryStage), 800, 600);
         primaryStage.setTitle("Hello Cel");
-        primaryStage.setScene(mEmailSpitterScene);
-        primaryStage.show();
+//        primaryStage.setScene(mEmailSpitterScene);
         primaryStage.setScene(mDatabaseManagerScene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
