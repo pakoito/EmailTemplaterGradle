@@ -25,6 +25,7 @@
           <root url="jar://$JAVA8_HOME$/jre/lib/ext/jfxrt.jar!/" />
           <root url="jar://$JAVA8_HOME$/jre/lib/ext/jfxrt.jar!/" />
           <root url="jar://$JAVA8_HOME$/jre/lib/ext/jfxrt.jar!/" />
+          <root url="jar://$JAVA8_HOME$/jre/lib/ext/jfxrt.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -39,6 +40,7 @@
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/TranslatorDatabase-sources.jar!/" />
           <root url="jar://$MODULE_DIR$/libs/TranslatorDatabase-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/libs/TranslatorDatabase-sources.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -46,5 +48,7 @@
     </orderEntry>
     <orderEntry type="library" exported="" name="Gradle: org.controlsfx:controlsfx:8.20.8" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.controlsfx:openjfx-dialogs:1.0.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.mail:mail:1.4.7" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: javax.activation:activation:1.1" level="project" />
   </component>
 </module>
