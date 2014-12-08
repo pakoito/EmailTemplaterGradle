@@ -103,6 +103,8 @@ public class Main extends Application {
             public void handle(final ActionEvent e) {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Choose your JSON database");
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
                 File file = fileChooser.showOpenDialog(primaryStage);
                 if (file != null) {
                     ObjectMapper mapper = new ObjectMapper();
