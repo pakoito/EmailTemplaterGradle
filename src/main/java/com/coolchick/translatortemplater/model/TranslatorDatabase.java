@@ -12,12 +12,15 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "translators"
+    "translators",
+    "all-languages"
 })
 public class TranslatorDatabase {
 
     @JsonProperty("translators")
     private List<Translator> translators = new ArrayList<Translator>();
+    @JsonProperty("all-languages")
+    private List<String> allLanguages = new ArrayList<String>();
 //    @JsonIgnore
 //    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -43,6 +46,31 @@ public class TranslatorDatabase {
 
     public TranslatorDatabase withTranslators(List<Translator> translators) {
         this.translators = translators;
+        return this;
+    }
+
+    /**
+     *
+     * @return
+     * The allLanguages
+     */
+    @JsonProperty("all-languages")
+    public List<String> getAllLanguages() {
+        return allLanguages;
+    }
+
+    /**
+     *
+     * @param allLanguages
+     * The all-languages
+     */
+    @JsonProperty("all-languages")
+    public void setAllLanguages(List<String> allLanguages) {
+        this.allLanguages = allLanguages;
+    }
+
+    public TranslatorDatabase withAllLanguages(List<String> allLanguages) {
+        this.allLanguages = allLanguages;
         return this;
     }
 

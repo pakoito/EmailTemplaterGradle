@@ -45,7 +45,6 @@ import java.util.ResourceBundle;
 
 public class Main extends Application {
     private ArrayList<Translator> mTranslators;
-
     private HashSet<String> mLanguages;
     private ObservableList<Translator> translatorObservableList;
     private ObservableList<Translator> translatorsTarget;
@@ -112,6 +111,7 @@ public class Main extends Application {
                                 mLanguages.add(language);
                             }
                         }
+                        mLanguages.addAll(database.getAllLanguages());
                         TextFields.bindAutoCompletion(textField, mLanguages);
                         getTranslatorsForFilter(textField, translatorObservableList, translatorsTarget);
                         geLanguageForFilter(textField, languagesObservableList, languagesTarget);
