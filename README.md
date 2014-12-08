@@ -1,0 +1,4 @@
+EmailTemplaterGradle
+====================
+
+JavaFX tinkering
