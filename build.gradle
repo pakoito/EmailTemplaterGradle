@@ -56,10 +56,10 @@ javafx {
 
             bundleArguments = [
                     // for EXE and MSI bundles
-                    'win.menuGroup' : 'Gradle Samples',	 //If menuHint is set, then this is the menu group to install the application into.
+                    'win.menuGroup'         : 'Gradle Samples',     //If menuHint is set, then this is the menu group to install the application into.
 
                     // fir MSI bundles, they have stricter version numbering rules
-                    'win.msi.productVersion' : '8.1.2'
+                    'win.msi.productVersion': '8.1.2'
             ]
         }
 
@@ -69,18 +69,18 @@ javafx {
 
             bundleArguments = [
                     // for mac apps
-                    'mac.category' : 'public.app-category.developer-tools',
-                    'mac.CFBundleIdentifier' : 'com.shemnon.gradle-plugin.FullyExpressed',
-                    'mac.CFBundleName' : 'Fully Expressed',
-                    'mac.signing-key-user-name' : 'Danno Ferrin',
+                    'mac.category'                : 'public.app-category.developer-tools',
+                    'mac.CFBundleIdentifier'      : 'com.shemnon.gradle-plugin.FullyExpressed',
+                    'mac.CFBundleName'            : 'Fully Expressed',
+                    'mac.signing-key-user-name'   : 'Danno Ferrin',
                     //'mac.signing-key-developer-id-app' : 'Developer ID Application: Danno Ferrin' // usually redundant with mac.signing-key-user-name
-                    'mac.bundle-id-signing-prefix' : 'com.shemnon.gradle-plugin.FE.',
+                    'mac.bundle-id-signing-prefix': 'com.shemnon.gradle-plugin.FE.',
 
                     // for PKG bundles
                     //'mac.signing-key-developer-id-installer' : 'Developer ID Installer: Danno Ferrin', // usually redundant with mac.signing-key-user-name
 
                     // for Mac App Store Ready bundles
-                    'mac.app-store-entitlements' : 'src/deploy/package/NetworkEntitlements.entitlements',
+                    'mac.app-store-entitlements'  : 'src/deploy/package/NetworkEntitlements.entitlements',
                     //'mac.signing-key-app' : '3rd Party Mac Developer Applicaiton: Danno Ferrin', // usually redundant with mac.signing-key-user-name
                     //'mac.signing-key-pkg' : '3rd Party Mac Developer Installer: Danno Ferrin', // usually redundant with mac.signing-key-user-name
 
@@ -95,7 +95,7 @@ javafx {
 
             bundleArguments = [
                     // for DEB bundles
-                    'email' : 'support@example.com', // This is the email used for the deb maintainer field.
+                    'email': 'support@example.com', // This is the email used for the deb maintainer field.
             ]
         }
     }
@@ -117,10 +117,10 @@ javafx {
 
     appID 'FullyExpressed'
     appName 'Fully Expressed Build File'
-    mainClass 'sample.Main'
+    mainClass 'com.coolchick.translatortemplater.Main'
 
     jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
-    systemProperties = [ 'prism.disableRegionCaching':'true' ]
+    systemProperties = ['prism.disableRegionCaching': 'true']
     arguments = ['1AC', '1NC', '2AC', '2NC', '1NR', '1AR', '2NR', '2AR']
 
     embedLauncher = true // caution: class-path not set and is overwritten if set to false
@@ -129,7 +129,6 @@ javafx {
     width = 800
     height = 600
     embedJNLP = false
-
 
     // deplpy/info attributes
     category = 'demo'
@@ -170,7 +169,7 @@ But really, you should live with the conventions when appropriate.'''
 
     bundleArguments {
         licenseFile = 'LICENSE' // click through license file for some bundlers
-        userJvmOptions = [ '-Xmx' : '128m',  '-Xms' : '128m'] // A mechanism to allow programs to adjust JVM Options
+        userJvmOptions = ['-Xmx': '128m', '-Xms': '128m'] // A mechanism to allow programs to adjust JVM Options
         preferencesID = 'com.shemnon.fullyExpressed' // implementation detail for user JVM options
     }
 }
@@ -187,8 +186,8 @@ jfxDeploy {
 }
 
 generateDebugKey {
-    dname='ou=them'
-    validity=1
+    dname = 'ou=them'
+    validity = 1
 }
 
 jar {

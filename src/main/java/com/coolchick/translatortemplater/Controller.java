@@ -1,4 +1,4 @@
-package sample;
+package com.coolchick.translatortemplater;
 
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.SwipeEvent;

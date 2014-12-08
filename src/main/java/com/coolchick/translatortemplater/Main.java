@@ -1,5 +1,5 @@
 
-package sample;
+package com.coolchick.translatortemplater;
 
 import com.coolchick.translatortemplater.model.Translator;
 import com.coolchick.translatortemplater.model.TranslatorDatabase;
@@ -38,24 +38,28 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Main extends Application {
     private ArrayList<Translator> mTranslators;
+
     private HashSet<String> mLanguages;
+
     private ObservableList<Translator> translatorObservableList;
+
     private ObservableList<Translator> translatorsTarget;
+
     private ObservableList<String> languagesObservableList;
+
     private ObservableList<String> languagesTarget;
+
     private TextField emailField;
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setResources(ResourceBundle.getBundle("sample.theResources"));
+        fxmlLoader.setResources(ResourceBundle
+                .getBundle("com.coolchick.translatortemplater.theResources"));
         StackPane pane = fxmlLoader.load(this.getClass().getResource("theScene.fxml").openStream());
         mTranslators = new ArrayList<Translator>();
         mLanguages = new HashSet<String>();
@@ -77,7 +81,8 @@ public class Main extends Application {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case ENTER:
-                        getTranslatorsForFilter(textField, translatorObservableList, translatorsTarget);
+                        getTranslatorsForFilter(textField, translatorObservableList,
+                                translatorsTarget);
                         geLanguageForFilter(textField, languagesObservableList, languagesTarget);
                         break;
                     default:
@@ -113,7 +118,8 @@ public class Main extends Application {
                         }
                         mLanguages.addAll(database.getAllLanguages());
                         TextFields.bindAutoCompletion(textField, mLanguages);
-                        getTranslatorsForFilter(textField, translatorObservableList, translatorsTarget);
+                        getTranslatorsForFilter(textField, translatorObservableList,
+                                translatorsTarget);
                         geLanguageForFilter(textField, languagesObservableList, languagesTarget);
                     } catch (IOException e1) {
                         showErrorDialog(primaryStage, "Bad translator database");
@@ -135,7 +141,8 @@ public class Main extends Application {
             public void handle(final ActionEvent e) {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Choose destination");
-                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Email draft(*.eml)", "*.eml"));
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("Email draft(*.eml)", "*.eml"));
                 File file = fileChooser.showSaveDialog(primaryStage);
                 if (file != null) {
                     try {
@@ -148,8 +155,10 @@ public class Main extends Application {
                             addresses[i] = new InternetAddress(trans.getEmail());
                         }
                         String from = emailField.getText();
-                        if (from != null && !"".equalsIgnoreCase(from)){
-                            message.addFrom(new Address[]{new InternetAddress()});
+                        if (from != null && !"".equalsIgnoreCase(from)) {
+                            message.addFrom(new Address[] {
+                                new InternetAddress()
+                            });
                         }
                         message.addRecipients(Message.RecipientType.BCC, addresses);
                         message.addHeaderLine("X-Unsent: 1");
@@ -162,7 +171,8 @@ public class Main extends Application {
                     } catch (FileNotFoundException e1) {
                         showErrorDialog(primaryStage, "Failed to open file\n" + e1);
                     } catch (IOException e1) {
-                        showErrorDialog(primaryStage, "File type unknown, please open it externally");
+                        showErrorDialog(primaryStage,
+                                "File type unknown, please open it externally");
                     }
                 }
             }
@@ -173,9 +183,9 @@ public class Main extends Application {
         children.add(languagesSelection);
         children.add(emailGrid);
         children.add(spitButton);
-        primaryStage.setTitle("Hello Cel");
         final Scene scene = new Scene(pane);
         scene.getStylesheets().setAll(getClass().getResource("theStyles.css").toExternalForm());
+        primaryStage.setTitle("Hello Cel");
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();
@@ -192,6 +202,19 @@ public class Main extends Application {
                 translators.add(translator);
             }
         }
+        translators.sort(new Comparator<Translator>() {
+            @Override
+            public int compare(Translator o1, Translator o2) {
+                int compare = o1.getName().compareToIgnoreCase(o2.getName());
+                if (compare < 0) {
+                    return -1;
+                } else if (compare > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     private void geLanguageForFilter(TextField textField, ObservableList<String> languages,
@@ -205,6 +228,19 @@ public class Main extends Application {
                 languages.add(language);
             }
         }
+        languages.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                int compare = o1.compareToIgnoreCase(o2);
+                if (compare < 0) {
+                    return -1;
+                } else if (compare > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     private void showErrorDialog(Stage primaryStage, String text) {
@@ -217,7 +253,7 @@ public class Main extends Application {
     }
 
     private void openFile(File file) throws IOException {
-            Desktop.getDesktop().open(file);
+        Desktop.getDesktop().open(file);
     }
 
     public static void main(String[] args) {
