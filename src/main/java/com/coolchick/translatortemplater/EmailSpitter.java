@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -58,7 +59,10 @@ public class EmailSpitter {
 
     private TextField emailField;
 
-    public Parent getRoot(final Stage stage) throws IOException {
+    private WeakReference<Stage> mStage;
+
+    public Parent getRoot(final Stage stageRef) throws IOException {
+        mStage = new WeakReference<Stage>(stageRef);
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setResources(ResourceBundle
                 .getBundle("com.coolchick.translatortemplater.theResources"));
@@ -108,7 +112,7 @@ public class EmailSpitter {
                 fileChooser.setTitle("Choose your JSON database");
                 fileChooser.getExtensionFilters().add(
                         new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
-                File file = fileChooser.showOpenDialog(stage);
+                File file = fileChooser.showOpenDialog(mStage.get());
                 if (file != null) {
                     ObjectMapper mapper = new ObjectMapper();
                     try {
@@ -126,7 +130,7 @@ public class EmailSpitter {
                                 translatorsTarget);
                         geLanguageForFilter(textField, languagesObservableList, languagesTarget);
                     } catch (IOException e1) {
-                        showErrorDialog(stage, "Bad translator database");
+                        showErrorDialog(mStage.get(), "Bad translator database");
                     }
                 }
             }
@@ -147,7 +151,7 @@ public class EmailSpitter {
                 fileChooser.setTitle("Choose destination");
                 fileChooser.getExtensionFilters().add(
                         new FileChooser.ExtensionFilter("Email draft(*.eml)", "*.eml"));
-                File file = fileChooser.showSaveDialog(stage);
+                File file = fileChooser.showSaveDialog(mStage.get());
                 if (file != null) {
                     try {
                         Properties properties = System.getProperties();
@@ -171,11 +175,11 @@ public class EmailSpitter {
                         message.writeTo(new FileOutputStream(file));
                         openFile(file);
                     } catch (MessagingException e1) {
-                        showErrorDialog(stage, "Failed to open file\n" + e1);
+                        showErrorDialog(mStage.get(), "Failed to open file\n" + e1);
                     } catch (FileNotFoundException e1) {
-                        showErrorDialog(stage, "Failed to open file\n" + e1);
+                        showErrorDialog(mStage.get(), "Failed to open file\n" + e1);
                     } catch (IOException e1) {
-                        showErrorDialog(stage,
+                        showErrorDialog(mStage.get(),
                                 "File type unknown, please open it externally");
                     }
                 }
