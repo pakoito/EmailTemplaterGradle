@@ -41,27 +41,24 @@ import java.util.*;
  * Created by Paco on 08/12/2014.
  * See LICENSE.md
  */
-// TODO FIXME static class -.-
+// TODO FIXME class -.-
 public class EmailSpitter {
 
-    private static ArrayList<Translator> mTranslators;
+    private ArrayList<Translator> mTranslators;
 
-    private static HashSet<String> mLanguages;
+    private HashSet<String> mLanguages;
 
-    private static ObservableList<Translator> translatorObservableList;
+    private ObservableList<Translator> translatorObservableList;
 
-    private static ObservableList<Translator> translatorsTarget;
+    private ObservableList<Translator> translatorsTarget;
 
-    private static ObservableList<String> languagesObservableList;
+    private ObservableList<String> languagesObservableList;
 
-    private static ObservableList<String> languagesTarget;
+    private ObservableList<String> languagesTarget;
 
-    private static TextField emailField;
+    private TextField emailField;
 
-    private EmailSpitter() {
-    }
-
-    public static Parent getRoot(final Stage stage) throws IOException {
+    public Parent getRoot(final Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setResources(ResourceBundle
                 .getBundle("com.coolchick.translatortemplater.theResources"));
@@ -193,7 +190,7 @@ public class EmailSpitter {
         return pane;
     }
 
-    private static void getTranslatorsForFilter(TextField textField,
+    private void getTranslatorsForFilter(TextField textField,
                                          ObservableList<Translator> translators, ObservableList<Translator> translatorsTarget) {
         translators.clear();
         for (Translator translator : mTranslators) {
@@ -219,7 +216,7 @@ public class EmailSpitter {
         });
     }
 
-    private static void geLanguageForFilter(TextField textField, ObservableList<String> languages,
+    private void geLanguageForFilter(TextField textField, ObservableList<String> languages,
                                      ObservableList<String> languagesTarget) {
         languages.clear();
         for (String language : mLanguages) {
@@ -245,7 +242,7 @@ public class EmailSpitter {
         });
     }
 
-    private static void showErrorDialog(Stage primaryStage, String text) {
+    private void showErrorDialog(Stage primaryStage, String text) {
         Alert dlg = new Alert(Alert.AlertType.ERROR);
         dlg.setTitle("NOPE.JPG");
         dlg.initOwner(primaryStage);
@@ -254,7 +251,7 @@ public class EmailSpitter {
         dlg.show();
     }
 
-    private static void openFile(File file) throws IOException {
+    private void openFile(File file) throws IOException {
         Desktop.getDesktop().open(file);
     }
 }
