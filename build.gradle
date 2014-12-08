@@ -42,8 +42,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-group = 'com.bitbucket.shemnon.javafxplugin.samples'
-version = '8.1.2-sample'
+group = 'com.coolchick'
+version = '1.0-SNAPSHOT'
 
 javafx {
 
@@ -115,8 +115,8 @@ javafx {
     }
     signingMode 'release'
 
-    appID 'FullyExpressed'
-    appName 'Fully Expressed Build File'
+    appID 'TranslatorTemplater'
+    appName 'Translator Templater'
     mainClass 'com.coolchick.translatortemplater.Main'
 
     jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
@@ -182,7 +182,7 @@ compileJava {
 jfxDeploy {
     // verbose output of the deployment, to the info chanel
     // it leaves files in the temp dir if set to true
-    verbose = false
+    verbose = true
 }
 
 generateDebugKey {
