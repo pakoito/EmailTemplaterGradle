@@ -1,0 +1,9 @@
+.funnytext {
+    -fx-font: 40 cursive, fantasy, monospace;
+    -fx-font-smoothing-type: lcd;
+    -fx-fill: red;
+}
+
+.ListSpinner .value {
+        -fx-font-weight: bold;
+}
