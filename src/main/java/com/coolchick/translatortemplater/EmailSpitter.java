@@ -2,8 +2,6 @@
 package com.coolchick.translatortemplater;
 
 import com.coolchick.translatortemplater.model.Translator;
-import com.coolchick.translatortemplater.model.TranslatorDatabase;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -38,7 +36,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 /**
  * Created by Paco on 08/12/2014. See LICENSE.md
@@ -46,10 +47,6 @@ import java.util.*;
 // TODO FIXME class -.-
 public class EmailSpitter {
     private final Main main;
-
-    private ArrayList<Translator> mTranslators;
-
-    private HashSet<String> mLanguages;
 
     private ObservableList<Translator> translatorObservableList;
 
@@ -78,8 +75,6 @@ public class EmailSpitter {
                 .getBundle("com.coolchick.translatortemplater.theResources"));
         StackPane pane = fxmlLoader.load(EmailSpitter.class.getResource("theScene.fxml")
                 .openStream());
-        mTranslators = new ArrayList<Translator>();
-        mLanguages = new HashSet<String>();
         translatorObservableList = FXCollections.observableArrayList();
         translatorsTarget = FXCollections.observableArrayList();
         languagesObservableList = FXCollections.observableArrayList();
@@ -131,46 +126,28 @@ public class EmailSpitter {
         languagesSelection.setTargetItems(languagesTarget);
         final javafx.scene.control.Button openButton = new javafx.scene.control.Button(
                 "Load JSON database...");
+        final javafx.scene.control.Button manageDatabaseButton = new javafx.scene.control.Button(
+                "<== Edit JSON Database");
+        manageDatabaseButton.setVisible(false);
         openButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choose your JSON database");
-                fileChooser.getExtensionFilters().add(
-                        new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
-                File file = fileChooser.showOpenDialog(mStage.get());
-                if (file != null) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    try {
-                        ArrayList<String> names = new ArrayList<String>();
-                        TranslatorDatabase database = mapper.readValue(file,
-                                TranslatorDatabase.class);
-                        mTranslators.clear();
-                        mLanguages.clear();
-                        for (Translator translator : database.getTranslators()) {
-                            names.add(translator.getName());
-                            mTranslators.add(translator);
-                            for (String language : translator.getLanguages()) {
-                                mLanguages.add(language);
-                            }
-                        }
-                        mLanguages.addAll(database.getAllLanguages());
-                        TextFields.bindAutoCompletion(languageFilter, mLanguages);
-                        TextFields.bindAutoCompletion(nameFilter, names);
-                        languagesObservableList.addAll(mLanguages);
-                        translatorObservableList.addAll(mTranslators);
-                        languagesTarget.clear();
-                        translatorsTarget.clear();
-                        languageFilter.setText("");
-                        nameFilter.setText("");
-                    } catch (IOException e1) {
-                        showErrorDialog(mStage.get(), "Bad translator database");
-                    }
+                main.openDatabase();
+                ArrayList<String> names = new ArrayList<String>();
+                for (Translator trans: main.getTranslators()){
+                    names.add(trans.getName());
                 }
+                TextFields.bindAutoCompletion(languageFilter, main.getLanguages());
+                TextFields.bindAutoCompletion(nameFilter, names);
+                languagesObservableList.addAll(main.getLanguages());
+                translatorObservableList.addAll(main.getTranslators());
+                languagesTarget.clear();
+                translatorsTarget.clear();
+                languageFilter.setText("");
+                nameFilter.setText("");
+                manageDatabaseButton.setVisible(true);
             }
         });
-        final javafx.scene.control.Button manageDatabaseButton = new javafx.scene.control.Button(
-                "<== Edit JSON Database");
         manageDatabaseButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
@@ -242,7 +219,7 @@ public class EmailSpitter {
 
     private void getTranslatorsForFilter(String text) {
         translatorObservableList.clear();
-        for (Translator translator : mTranslators) {
+        for (Translator translator : main.getTranslators()) {
             if (text == null
                     || text.equalsIgnoreCase("")
                     || (translator.getLanguages().contains(text) && !translatorsTarget
@@ -267,7 +244,7 @@ public class EmailSpitter {
 
     private void getTranslatorsForName(String filter) {
         translatorObservableList.clear();
-        for (Translator translator : mTranslators) {
+        for (Translator translator : main.getTranslators()) {
             if (filter == null
                     || filter.equalsIgnoreCase("")
                     || (translator.getName().replace(" ", "").toLowerCase()
@@ -293,7 +270,7 @@ public class EmailSpitter {
 
     private void geLanguageForFilter(String filter) {
         languagesObservableList.clear();
-        for (String language : mLanguages) {
+        for (String language : main.getLanguages()) {
             if (filter == null || filter.equalsIgnoreCase("")
                     || (filter.equalsIgnoreCase(language) && !languagesTarget.contains(language))) {
                 languagesObservableList.add(language);

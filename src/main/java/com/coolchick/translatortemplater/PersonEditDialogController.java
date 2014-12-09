@@ -62,9 +62,8 @@ public class PersonEditDialogController {
      * Sets the translator to be edited in the dialog.
      *
      * @param translator
-     * @param languages
      */
-    public void setTranslator(Translator translator, HashSet<String> languages) {
+    public void setTranslator(Translator translator) {
         this.translator = translator;
         firstNameField.setText(translator.getName());
         emailField.setText(translator.getEmail());

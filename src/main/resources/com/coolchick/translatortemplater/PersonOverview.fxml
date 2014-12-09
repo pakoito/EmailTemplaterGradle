@@ -9,7 +9,8 @@
         <VBox spacing="30">
             <HBox spacing="30" prefWidth="400">
                 <Button fx:id="returnButton"/>
-                <Button fx:id="openButton"/>
+                <!--<Button fx:id="openButton"/>-->
+                <Button fx:id="editLanguages"/>
             </HBox>
             <SplitPane dividerPositions="0.35618729096989965" focusTraversable="true" layoutX="183.0" layoutY="76.0"
                        prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"

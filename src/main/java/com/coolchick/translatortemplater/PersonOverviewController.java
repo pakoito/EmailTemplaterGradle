@@ -2,8 +2,6 @@
 package com.coolchick.translatortemplater;
 
 import com.coolchick.translatortemplater.model.Translator;
-import com.coolchick.translatortemplater.model.TranslatorDatabase;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,19 +14,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import org.controlsfx.control.textfield.TextFields;
 import org.controlsfx.dialog.Dialogs;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 public class PersonOverviewController {
-    private HashSet<String> mLanguages = new HashSet<String>();
-
-    private ArrayList<Translator> mTranslators = new ArrayList<Translator>();
+    private List<Translator> mTranslators;
 
     private ObservableList<Translator> translatorObservableList = FXCollections
             .observableArrayList();
@@ -54,26 +48,31 @@ public class PersonOverviewController {
     @FXML
     private Label languagesLabel;
 
-    @FXML
-    private Button openButton;
-
+    // @FXML
+    // private Button openButton;
     @FXML
     public Button returnButton;
 
     // Reference to the main application.
-    private Main mainApp;
+    private Main main;
 
     @FXML
     private GridPane filterGrid;
+
+    @FXML
+    public Button editLanguages;
 
     private TextField languageFilter;
 
     private TextField nameFilter;
 
-    /**
-     * The constructor. The constructor is called before the initialize() method.
-     */
-    public PersonOverviewController() {
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
+    public void setTranslators(List<Translator> translators) {
+        mTranslators = new ArrayList<Translator>(translators);
+        translatorObservableList.addAll(mTranslators);
     }
 
     /**
@@ -98,29 +97,33 @@ public class PersonOverviewController {
                         showTranslatorDetails(newValue);
                     }
                 });
-        openButton.setText("Load JSON database...");
-        openButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(final ActionEvent e) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choose your JSON database");
-                fileChooser.getExtensionFilters().add(
-                        new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
-                File file = fileChooser.showOpenDialog(mainApp.getStage());
-                if (file != null) {
-                    loadDatabase(file);
-                }
-            }
-        });
+        personTable.setItems(translatorObservableList);
+        // openButton.setText("Load JSON database...");
+        // openButton.setOnAction(new EventHandler<ActionEvent>() {
+        // @Override
+        // public void handle(final ActionEvent e) {
+        // FileChooser fileChooser = new FileChooser();
+        // fileChooser.setTitle("Choose your JSON database");
+        // fileChooser.getExtensionFilters().add(
+        // new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
+        // File file = fileChooser.showOpenDialog(main.getStage());
+        // if (file != null) {
+        // loadDatabase(file);
+        // }
+        // }
+        // });
         returnButton.setText("<== Return to email spitter");
         returnButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
-                if (mTranslators.size() > 0) {
-                    showExitDialog();
-                } else {
-                    mainApp.showMailSpitter();
-                }
+                showExitDialog();
+            }
+        });
+        editLanguages.setText("Edit languages");
+        editLanguages.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.showLanguageOverview();
             }
         });
         final javafx.scene.control.Button spitButton = new javafx.scene.control.Button(
@@ -138,7 +141,7 @@ public class PersonOverviewController {
         spitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
-                spitDatabase();
+                main.spitDatabase();
             }
         });
         languageFilter.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -167,15 +170,6 @@ public class PersonOverviewController {
                 }
             }
         });
-    }
-
-    /**
-     * Is called by the main application to give a reference back to itself.
-     *
-     * @param mainApp
-     */
-    public void setMainApp(Main mainApp) {
-        this.mainApp = mainApp;
     }
 
     /**
@@ -219,7 +213,7 @@ public class PersonOverviewController {
     @FXML
     private void handleNewTranslator() {
         Translator tempTranslator = new Translator();
-        boolean okClicked = mainApp.showTranslatorEditDialog(tempTranslator, mLanguages);
+        boolean okClicked = main.showTranslatorEditDialog(tempTranslator);
         if (okClicked) {
             translatorObservableList.add(tempTranslator);
         }
@@ -233,16 +227,17 @@ public class PersonOverviewController {
     private void handleEditTranslator() {
         Translator selectedTranslator = personTable.getSelectionModel().getSelectedItem();
         if (selectedTranslator != null) {
-            boolean okClicked = mainApp.showTranslatorEditDialog(selectedTranslator, mLanguages);
+            boolean okClicked = main.showTranslatorEditDialog(selectedTranslator);
             if (okClicked) {
                 int addedAt = 0;
                 // FIXME force update
                 for (int i = 0; i < translatorObservableList.size(); i++) {
                     Translator trans = translatorObservableList.get(i);
                     if (selectedTranslator == trans) {
-                        if (i == translatorObservableList.size() - 1){
+                        if (i == translatorObservableList.size() - 1) {
                             translatorObservableList.remove(i);
-                            translatorObservableList.add(translatorObservableList.size() - 1, selectedTranslator);
+                            translatorObservableList.add(translatorObservableList.size() - 1,
+                                    selectedTranslator);
                             addedAt = translatorObservableList.size() - 2;
                         } else {
                             translatorObservableList.remove(i);
@@ -261,42 +256,6 @@ public class PersonOverviewController {
         }
     }
 
-    private void loadDatabase(File file) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            TranslatorDatabase database = mapper.readValue(file, TranslatorDatabase.class);
-            mLanguages.clear();
-            mTranslators.clear();
-            translatorObservableList.clear();
-            Set<String> names = new HashSet<String>();
-            for (Translator translator : database.getTranslators()) {
-                mTranslators.add(translator);
-                names.add(translator.getName());
-                for (String language : translator.getLanguages()) {
-                    mLanguages.add(language);
-                }
-            }
-            mLanguages.addAll(database.getAllLanguages());
-            personTable.setItems(translatorObservableList);
-            translatorObservableList.addAll(mTranslators);
-            languageFilter.setText("");
-            nameFilter.setText("");
-            TextFields.bindAutoCompletion(languageFilter, mLanguages);
-            TextFields.bindAutoCompletion(nameFilter, names);
-        } catch (IOException e1) {
-            showErrorDialog(mainApp.getStage(), "Bad translator database");
-        }
-    }
-
-    private void showErrorDialog(Stage primaryStage, String text) {
-        Alert dlg = new Alert(Alert.AlertType.ERROR);
-        dlg.setTitle("NOPE.JPG");
-        dlg.initOwner(primaryStage);
-        dlg.initModality(Modality.WINDOW_MODAL);
-        dlg.getDialogPane().setContentText(text);
-        dlg.show();
-    }
-
     private void showExitDialog() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Leaving database editor!");
@@ -308,10 +267,12 @@ public class PersonOverviewController {
         alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            spitDatabase();
-            mainApp.showMailSpitter();
+            mTranslators.clear();
+            mTranslators.addAll(mTranslators);
+            main.spitDatabase();
+            main.showMailSpitter();
         } else if (result.get() == buttonTypeTwo) {
-            mainApp.showMailSpitter();
+            main.showMailSpitter();
         } else {
             // ... user chose CANCEL or closed the dialog
         }
@@ -363,46 +324,5 @@ public class PersonOverviewController {
                 }
             }
         });
-    }
-
-    private void spitDatabase() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose destination");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
-        File file = fileChooser.showSaveDialog(mainApp.getStage());
-        if (file != null) {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                Set<String> languages = new HashSet<String>();
-                languages.addAll(mLanguages);
-                for (Translator translator : translatorObservableList) {
-                    for (String language : translator.getLanguages()) {
-                        languages.add(language);
-                    }
-                }
-                TranslatorDatabase database = new TranslatorDatabase().withAllLanguages(
-                        new ArrayList<String>(languages)).withTranslators(translatorObservableList);
-                String databaseSerialized = mapper.writeValueAsString(database);
-                FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(databaseSerialized);
-                bw.close();
-                loadDatabase(file);
-                showInformation("Database save", "Saved correctly!");
-            } catch (FileNotFoundException e1) {
-                showErrorDialog(mainApp.getStage(), "Failed to open file\n" + e1);
-            } catch (IOException e1) {
-                showErrorDialog(mainApp.getStage(), "File type unknown, please open it externally");
-            }
-        }
-    }
-
-    private void showInformation(String title, String text) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(text);
-        alert.showAndWait();
     }
 }

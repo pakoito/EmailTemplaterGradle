@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.annotation.Generated;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
@@ -20,7 +22,7 @@ public class TranslatorDatabase {
     @JsonProperty("translators")
     private List<Translator> translators = new ArrayList<Translator>();
     @JsonProperty("all-languages")
-    private List<String> allLanguages = new ArrayList<String>();
+    private Set<String> allLanguages = new HashSet<String>();
 //    @JsonIgnore
 //    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -55,7 +57,7 @@ public class TranslatorDatabase {
      * The allLanguages
      */
     @JsonProperty("all-languages")
-    public List<String> getAllLanguages() {
+    public Set<String> getAllLanguages() {
         return allLanguages;
     }
 
@@ -65,11 +67,11 @@ public class TranslatorDatabase {
      * The all-languages
      */
     @JsonProperty("all-languages")
-    public void setAllLanguages(List<String> allLanguages) {
+    public void setAllLanguages(Set<String> allLanguages) {
         this.allLanguages = allLanguages;
     }
 
-    public TranslatorDatabase withAllLanguages(List<String> allLanguages) {
+    public TranslatorDatabase withAllLanguages(Set<String> allLanguages) {
         this.allLanguages = allLanguages;
         return this;
     }
