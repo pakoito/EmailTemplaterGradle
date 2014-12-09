@@ -146,6 +146,7 @@ public class PersonOverviewController {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case ENTER:
+                        nameFilter.setText("");
                         getTranslatorsForFilter(languageFilter.getText());
                         break;
                     default:
@@ -158,6 +159,7 @@ public class PersonOverviewController {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case ENTER:
+                        languageFilter.setText("");
                         getTranslatorsForName(nameFilter.getText());
                         break;
                     default:
