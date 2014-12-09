@@ -46,6 +46,7 @@ import java.util.*;
 // TODO FIXME class -.-
 public class EmailSpitter {
     private final Main main;
+
     private ArrayList<Translator> mTranslators;
 
     private HashSet<String> mLanguages;
@@ -61,6 +62,10 @@ public class EmailSpitter {
     private TextField emailField;
 
     private WeakReference<Stage> mStage;
+
+    private TextField languageFilter;
+
+    private TextField nameFilter;
 
     public EmailSpitter(Main main) {
         this.main = main;
@@ -84,18 +89,34 @@ public class EmailSpitter {
         GridPane filterGrid = new GridPane();
         filterGrid.setVgap(10);
         filterGrid.setHgap(10);
-        filterGrid.setPadding(new Insets(30, 60, 0, 30));
-        final TextField textField = new TextField();
-        filterGrid.add(new Label("Language filter"), 0, 0);
-        filterGrid.add(textField, 1, 0);
-        textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        filterGrid.setPadding(new Insets(10, 10, 10, 10));
+        nameFilter = new TextField();
+        filterGrid.add(new Label("Name filter"), 0, 0);
+        filterGrid.add(nameFilter, 1, 0);
+        languageFilter = new TextField();
+        filterGrid.add(new Label("Language filter"), 0, 1);
+        filterGrid.add(languageFilter, 1, 1);
+        languageFilter.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case ENTER:
-                        getTranslatorsForFilter(textField, translatorObservableList,
-                                translatorsTarget);
-                        geLanguageForFilter(textField, languagesObservableList, languagesTarget);
+                        nameFilter.setText("");
+                        getTranslatorsForFilter(languageFilter.getText());
+                        geLanguageForFilter(languageFilter.getText());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        nameFilter.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case ENTER:
+                        languageFilter.setText("");
+                        getTranslatorsForName(nameFilter.getText());
                         break;
                     default:
                         break;
@@ -121,21 +142,27 @@ public class EmailSpitter {
                 if (file != null) {
                     ObjectMapper mapper = new ObjectMapper();
                     try {
+                        ArrayList<String> names = new ArrayList<String>();
                         TranslatorDatabase database = mapper.readValue(file,
                                 TranslatorDatabase.class);
                         mTranslators.clear();
                         mLanguages.clear();
                         for (Translator translator : database.getTranslators()) {
+                            names.add(translator.getName());
                             mTranslators.add(translator);
                             for (String language : translator.getLanguages()) {
                                 mLanguages.add(language);
                             }
                         }
                         mLanguages.addAll(database.getAllLanguages());
-                        TextFields.bindAutoCompletion(textField, mLanguages);
-                        getTranslatorsForFilter(textField, translatorObservableList,
-                                translatorsTarget);
-                        geLanguageForFilter(textField, languagesObservableList, languagesTarget);
+                        TextFields.bindAutoCompletion(languageFilter, mLanguages);
+                        TextFields.bindAutoCompletion(nameFilter, names);
+                        languagesObservableList.addAll(mLanguages);
+                        translatorObservableList.addAll(mTranslators);
+                        languagesTarget.clear();
+                        translatorsTarget.clear();
+                        languageFilter.setText("");
+                        nameFilter.setText("");
                     } catch (IOException e1) {
                         showErrorDialog(mStage.get(), "Bad translator database");
                     }
@@ -213,18 +240,17 @@ public class EmailSpitter {
         return pane;
     }
 
-    private void getTranslatorsForFilter(TextField textField,
-            ObservableList<Translator> translators, ObservableList<Translator> translatorsTarget) {
-        translators.clear();
+    private void getTranslatorsForFilter(String text) {
+        translatorObservableList.clear();
         for (Translator translator : mTranslators) {
-            if (textField.getText() == null
-                    || textField.getText().equalsIgnoreCase("")
-                    || (translator.getLanguages().contains(textField.getText()) && !translatorsTarget
+            if (text == null
+                    || text.equalsIgnoreCase("")
+                    || (translator.getLanguages().contains(text) && !translatorsTarget
                             .contains(translator))) {
-                translators.add(translator);
+                translatorObservableList.add(translator);
             }
         }
-        translators.sort(new Comparator<Translator>() {
+        translatorObservableList.sort(new Comparator<Translator>() {
             @Override
             public int compare(Translator o1, Translator o2) {
                 int compare = o1.getName().compareToIgnoreCase(o2.getName());
@@ -239,18 +265,41 @@ public class EmailSpitter {
         });
     }
 
-    private void geLanguageForFilter(TextField textField, ObservableList<String> languages,
-            ObservableList<String> languagesTarget) {
-        languages.clear();
-        for (String language : mLanguages) {
-            if (textField.getText() == null
-                    || textField.getText().equalsIgnoreCase("")
-                    || (textField.getText().equalsIgnoreCase(language) && !languagesTarget
-                            .contains(language))) {
-                languages.add(language);
+    private void getTranslatorsForName(String filter) {
+        translatorObservableList.clear();
+        for (Translator translator : mTranslators) {
+            if (filter == null
+                    || filter.equalsIgnoreCase("")
+                    || (translator.getName().replace(" ", "").toLowerCase()
+                            .contains(filter.replace(" ", "").toLowerCase()) && !translatorsTarget
+                            .contains(translator))) {
+                translatorObservableList.add(translator);
             }
         }
-        languages.sort(new Comparator<String>() {
+        translatorObservableList.sort(new Comparator<Translator>() {
+            @Override
+            public int compare(Translator o1, Translator o2) {
+                int compare = o1.getName().compareToIgnoreCase(o2.getName());
+                if (compare < 0) {
+                    return -1;
+                } else if (compare > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+    }
+
+    private void geLanguageForFilter(String filter) {
+        languagesObservableList.clear();
+        for (String language : mLanguages) {
+            if (filter == null || filter.equalsIgnoreCase("")
+                    || (filter.equalsIgnoreCase(language) && !languagesTarget.contains(language))) {
+                languagesObservableList.add(language);
+            }
+        }
+        languagesObservableList.sort(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 int compare = o1.compareToIgnoreCase(o2);
