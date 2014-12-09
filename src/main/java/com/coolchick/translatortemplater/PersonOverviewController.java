@@ -116,11 +116,11 @@ public class PersonOverviewController {
         returnButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
-				if (mTranslators.size() > 0) {
-					showExitDialog();
-				} else {
-					mainApp.showMailSpitter();
-				}
+                if (mTranslators.size() > 0) {
+                    showExitDialog();
+                } else {
+                    mainApp.showMailSpitter();
+                }
             }
         });
         final javafx.scene.control.Button spitButton = new javafx.scene.control.Button(
@@ -171,7 +171,7 @@ public class PersonOverviewController {
 
     /**
      * Is called by the main application to give a reference back to itself.
-     * 
+     *
      * @param mainApp
      */
     public void setMainApp(Main mainApp) {
@@ -181,7 +181,7 @@ public class PersonOverviewController {
     /**
      * Fills all text fields to show details about the person. If the specified person is null, all
      * text fields are cleared.
-     * 
+     *
      * @param person the person or null
      */
     private void showTranslatorDetails(Translator person) {
@@ -235,10 +235,24 @@ public class PersonOverviewController {
         if (selectedTranslator != null) {
             boolean okClicked = mainApp.showTranslatorEditDialog(selectedTranslator, mLanguages);
             if (okClicked) {
+                int addedAt = 0;
                 // FIXME force update
-                translatorObservableList.remove(selectedTranslator);
-                translatorObservableList.add(0, selectedTranslator);
-                personTable.getSelectionModel().select(0);
+                for (int i = 0; i < translatorObservableList.size(); i++) {
+                    Translator trans = translatorObservableList.get(i);
+                    if (selectedTranslator == trans) {
+                        if (i == translatorObservableList.size() - 1){
+                            translatorObservableList.remove(i);
+                            translatorObservableList.add(translatorObservableList.size() - 1, selectedTranslator);
+                            addedAt = translatorObservableList.size() - 2;
+                        } else {
+                            translatorObservableList.remove(i);
+                            translatorObservableList.add(selectedTranslator);
+                            addedAt = translatorObservableList.size() - 1;
+                        }
+                        break;
+                    }
+                }
+                personTable.getSelectionModel().select(addedAt);
             }
         } else {
             // Nothing selected.
@@ -375,7 +389,7 @@ public class PersonOverviewController {
                 bw.write(databaseSerialized);
                 bw.close();
                 loadDatabase(file);
-				showInformation("Database save", "Saved correctly!");
+                showInformation("Database save", "Saved correctly!");
             } catch (FileNotFoundException e1) {
                 showErrorDialog(mainApp.getStage(), "Failed to open file\n" + e1);
             } catch (IOException e1) {
@@ -384,12 +398,11 @@ public class PersonOverviewController {
         }
     }
 
-	private void showInformation(String title, String text) {
-		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(text);
-
-		alert.showAndWait();
-	}
+    private void showInformation(String title, String text) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        alert.showAndWait();
+    }
 }

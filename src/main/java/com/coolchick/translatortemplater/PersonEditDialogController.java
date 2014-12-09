@@ -11,6 +11,7 @@ import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.dialog.Dialogs;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 
 /**
@@ -73,6 +74,19 @@ public class PersonEditDialogController {
         langs.removeAll(translator.getLanguages());
         this.languages = langs;
         languagesObservableList = FXCollections.observableArrayList(langs);
+        languagesObservableList.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                int compare = o1.compareToIgnoreCase(o2);
+                if (compare < 0) {
+                    return -1;
+                } else if (compare > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
         languagesField.setSourceItems(languagesObservableList);
     }
 
@@ -93,6 +107,19 @@ public class PersonEditDialogController {
         if (isInputValid()) {
             translator.setName(firstNameField.getText());
             translator.setEmail(emailField.getText());
+            languagesTarget.sort(new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    int compare = o1.compareToIgnoreCase(o2);
+                    if (compare < 0) {
+                        return -1;
+                    } else if (compare > 0) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
             translator.setLanguages(Arrays.asList(languagesTarget.toArray(new String[languagesTarget.size()])));
             okClicked = true;
             dialogStage.close();
