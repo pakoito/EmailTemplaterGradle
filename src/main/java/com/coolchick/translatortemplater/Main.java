@@ -133,7 +133,7 @@ public class Main extends Application {
         }
     }
 
-    public boolean isDatabaseAvailable(){
+    public boolean isDatabaseAvailable() {
         return (databaseFile != null && databaseFile.exists());
     }
 
@@ -206,6 +206,7 @@ public class Main extends Application {
     }
 
     private boolean spitDatabase(File file) {
+        BufferedWriter bw = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             Set<String> languages = new HashSet<String>();
@@ -220,7 +221,7 @@ public class Main extends Application {
                     .withTranslators(getTranslators());
             String databaseSerialized = mapper.writeValueAsString(database);
             FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
+            bw = new BufferedWriter(fw);
             bw.write(databaseSerialized);
             bw.close();
             openDatabase(file);
@@ -230,6 +231,14 @@ public class Main extends Application {
             showErrorDialog(getStage(), "Failed to open file\n" + e1);
         } catch (IOException e1) {
             showErrorDialog(getStage(), "File type unknown, please open it externally");
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return false;
     }
