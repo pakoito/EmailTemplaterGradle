@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -44,6 +45,7 @@ import java.util.*;
  */
 // TODO FIXME class -.-
 public class EmailSpitter {
+    private final Main main;
     private ArrayList<Translator> mTranslators;
 
     private HashSet<String> mLanguages;
@@ -59,6 +61,10 @@ public class EmailSpitter {
     private TextField emailField;
 
     private WeakReference<Stage> mStage;
+
+    public EmailSpitter(Main main) {
+        this.main = main;
+    }
 
     public Parent getRoot(final Stage stageRef) throws IOException {
         mStage = new WeakReference<Stage>(stageRef);
@@ -137,6 +143,16 @@ public class EmailSpitter {
                 }
             }
         });
+        final javafx.scene.control.Button manageDatabaseButton = new javafx.scene.control.Button(
+                "Edit JSON Database...");
+        manageDatabaseButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent e) {
+                main.showTranslatorOverview();
+            }
+        });
+        final HBox buttonBox = new HBox(openButton, manageDatabaseButton);
+        buttonBox.setPadding(new Insets(10, 10, 10, 10));
         GridPane emailGrid = new GridPane();
         emailGrid.setVgap(10);
         emailGrid.setHgap(10);
@@ -187,7 +203,7 @@ public class EmailSpitter {
                 }
             }
         });
-        children.add(openButton);
+        children.add(buttonBox);
         children.add(filterGrid);
         children.add(listSelectionView);
         children.add(languagesSelection);

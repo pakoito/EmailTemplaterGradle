@@ -15,8 +15,6 @@ import java.util.HashSet;
 public class Main extends Application {
     private Scene mEmailSpitterScene;
 
-    private Scene mDatabaseManagerScene;
-
     private Stage primaryStage;
 
     public Stage getStage() {
@@ -26,13 +24,12 @@ public class Main extends Application {
     @Override
     public void start(final Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        mEmailSpitterScene = new Scene(new EmailSpitter().getRoot(primaryStage), 800, 600);
-        mDatabaseManagerScene = new Scene(new DatabaseManager().getRoot(primaryStage), 800, 600);
+        mEmailSpitterScene = new Scene(new EmailSpitter(this).getRoot(primaryStage), 800, 600);
         primaryStage.setTitle("Hello Cel");
-//        primaryStage.setScene(mEmailSpitterScene);
+        primaryStage.setScene(mEmailSpitterScene);
 //        primaryStage.setScene(mDatabaseManagerScene);
 //        primaryStage.show();
-        showTranslatorOverview();
+        primaryStage.show();
     }
 
     /**
@@ -53,7 +50,6 @@ public class Main extends Application {
             controller.setMainApp(this);
 
             primaryStage.setScene(new Scene(personOverview, 800, 600));
-            primaryStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
