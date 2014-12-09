@@ -73,7 +73,6 @@ public class EmailSpitter {
                 .getBundle("com.coolchick.translatortemplater.theResources"));
         StackPane pane = fxmlLoader.load(EmailSpitter.class.getResource("theScene.fxml")
                 .openStream());
-        pane.setPadding(new Insets(10, 10, 10, 10));
         mTranslators = new ArrayList<Translator>();
         mLanguages = new HashSet<String>();
         translatorObservableList = FXCollections.observableArrayList();
@@ -144,15 +143,17 @@ public class EmailSpitter {
             }
         });
         final javafx.scene.control.Button manageDatabaseButton = new javafx.scene.control.Button(
-                "Edit JSON Database...");
+                "<== Edit JSON Database");
         manageDatabaseButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
                 main.showTranslatorOverview();
             }
         });
-        final HBox buttonBox = new HBox(openButton, manageDatabaseButton);
+        final HBox buttonBox = new HBox(manageDatabaseButton, openButton);
         buttonBox.setPadding(new Insets(10, 10, 10, 10));
+        buttonBox.setSpacing(30);
+        buttonBox.setPrefWidth(400);
         GridPane emailGrid = new GridPane();
         emailGrid.setVgap(10);
         emailGrid.setHgap(10);

@@ -55,6 +55,9 @@ public class PersonOverviewController {
     @FXML
     private Button openButton;
 
+    @FXML
+    public Button returnButton;
+
     // Reference to the main application.
     private Main mainApp;
 
@@ -98,6 +101,13 @@ public class PersonOverviewController {
                 if (file != null) {
                     loadDatabase(file);
                 }
+            }
+        });
+        returnButton.setText("<== Return to email spitter");
+        returnButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent e) {
+                mainApp.showMailSpitter();
             }
         });
     }
