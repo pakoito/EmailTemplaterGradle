@@ -126,26 +126,39 @@ public class EmailSpitter {
         languagesSelection.setTargetItems(languagesTarget);
         final javafx.scene.control.Button openButton = new javafx.scene.control.Button(
                 "Load JSON database...");
+        final javafx.scene.control.Button saveButton = new javafx.scene.control.Button(
+                "Save new JSON database...");
+        final javafx.scene.control.Button appendButton = new javafx.scene.control.Button(
+                "Append JSON database...");
         final javafx.scene.control.Button manageDatabaseButton = new javafx.scene.control.Button(
                 "<== Edit JSON Database");
-        manageDatabaseButton.setVisible(false);
         openButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
-                main.openDatabase();
-                ArrayList<String> names = new ArrayList<String>();
-                for (Translator trans: main.getTranslators()){
-                    names.add(trans.getName());
+                if (main.openDatabase()) {
+                    startDatabase(false);
+                    manageDatabaseButton.setVisible(true);
+                    appendButton.setVisible(true);
                 }
-                TextFields.bindAutoCompletion(languageFilter, main.getLanguages());
-                TextFields.bindAutoCompletion(nameFilter, names);
-                languagesObservableList.addAll(main.getLanguages());
-                translatorObservableList.addAll(main.getTranslators());
-                languagesTarget.clear();
-                translatorsTarget.clear();
-                languageFilter.setText("");
-                nameFilter.setText("");
-                manageDatabaseButton.setVisible(true);
+            }
+        });
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (main.spitNewDatabase()) {
+                    startDatabase(false);
+                    manageDatabaseButton.setVisible(true);
+                    appendButton.setVisible(true);
+                }
+            }
+        });
+        appendButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (main.appendDatabase()) {
+                    startDatabase(true);
+                    manageDatabaseButton.setVisible(false);
+                }
             }
         });
         manageDatabaseButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -154,7 +167,7 @@ public class EmailSpitter {
                 main.showTranslatorOverview();
             }
         });
-        final HBox buttonBox = new HBox(manageDatabaseButton, openButton);
+        final HBox buttonBox = new HBox(manageDatabaseButton, openButton, saveButton, appendButton);
         buttonBox.setPadding(new Insets(10, 10, 10, 10));
         buttonBox.setSpacing(30);
         buttonBox.setPrefWidth(400);
@@ -214,7 +227,40 @@ public class EmailSpitter {
         children.add(languagesSelection);
         children.add(emailGrid);
         children.add(spitButton);
+        if (main.isDatabaseAvailable()) {
+            /* Return from saved database */
+            startDatabase(false);
+            manageDatabaseButton.setVisible(true);
+            appendButton.setVisible(true);
+            saveButton.setVisible(true);
+            openButton.setVisible(true);
+        } else {
+            /* Cold start */
+            manageDatabaseButton.setVisible(false);
+            appendButton.setVisible(false);
+            saveButton.setVisible(true);
+            openButton.setVisible(true);
+        }
         return pane;
+    }
+
+    private void startDatabase(boolean append) {
+        if (!append) {
+            languagesObservableList.clear();
+            translatorObservableList.clear();
+        }
+        languagesTarget.clear();
+        translatorsTarget.clear();
+        languageFilter.setText("");
+        nameFilter.setText("");
+        ArrayList<String> names = new ArrayList<String>();
+        for (Translator trans : main.getTranslators()) {
+            names.add(trans.getName());
+        }
+        TextFields.bindAutoCompletion(languageFilter, main.getLanguages());
+        TextFields.bindAutoCompletion(nameFilter, names);
+        languagesObservableList.addAll(main.getLanguages());
+        translatorObservableList.addAll(main.getTranslators());
     }
 
     private void getTranslatorsForFilter(String text) {

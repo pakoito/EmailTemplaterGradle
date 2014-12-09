@@ -155,7 +155,7 @@ public class LanguageOverview {
     private void updateAndSaveDb() {
         main.getLanguages().clear();
         main.getLanguages().addAll(mLanguages);
-        main.spitDatabase();
+        main.spitDatabaseIfAvailable();
     }
 
     private void updateObservable() {

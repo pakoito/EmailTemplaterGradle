@@ -130,7 +130,11 @@ public class Main extends Application {
         }
     }
 
-    public void openDatabase() {
+    public boolean isDatabaseAvailable(){
+        return (databaseFile != null && databaseFile.exists());
+    }
+
+    public boolean appendDatabase() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your JSON database");
         fileChooser.getExtensionFilters().add(
@@ -138,36 +142,67 @@ public class Main extends Application {
         File file = fileChooser.showOpenDialog(getStage());
         if (file != null) {
             databaseFile = file;
-            openDatabase(file);
+            return appendDatabase(file);
         }
+        return false;
     }
 
-    private void openDatabase(File file) {
+    private boolean appendDatabase(File file) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            TranslatorDatabase database = mapper.readValue(file, TranslatorDatabase.class);
+            getTranslators().addAll(database.getTranslators());
+            getLanguages().addAll(database.getAllLanguages());
+            return true;
+        } catch (IOException e1) {
+            showErrorDialog(getStage(), "Bad translator database");
+        }
+        return false;
+    }
+
+    public boolean openDatabase() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose your JSON database");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
+        File file = fileChooser.showOpenDialog(getStage());
+        if (file != null) {
+            databaseFile = file;
+            return openDatabase(file);
+        }
+        return false;
+    }
+
+    private boolean openDatabase(File file) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             TranslatorDatabase database = mapper.readValue(file, TranslatorDatabase.class);
             setDatabase(database);
+            return true;
         } catch (IOException e1) {
             showErrorDialog(getStage(), "Bad translator database");
         }
+        return false;
     }
 
-    public void spitDatabase() {
+    public boolean spitDatabaseIfAvailable() {
         if (databaseFile != null && databaseFile.exists()) {
-            spitDatabase(databaseFile);
+            return spitDatabase(databaseFile);
         } else {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Choose destination");
-            fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
-            File file = fileChooser.showSaveDialog(getStage());
-            if (file != null) {
-                spitDatabase(file);
-            }
+            return spitNewDatabase();
         }
     }
 
-    private void spitDatabase(File file) {
+    public boolean spitNewDatabase() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose destination");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
+        File file = fileChooser.showSaveDialog(getStage());
+        return file != null && spitDatabase(file);
+    }
+
+    private boolean spitDatabase(File file) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Set<String> languages = new HashSet<String>();
@@ -187,11 +222,13 @@ public class Main extends Application {
             bw.close();
             openDatabase(file);
             showInformation("Database save", "Saved correctly!");
+            return true;
         } catch (FileNotFoundException e1) {
             showErrorDialog(getStage(), "Failed to open file\n" + e1);
         } catch (IOException e1) {
             showErrorDialog(getStage(), "File type unknown, please open it externally");
         }
+        return false;
     }
 
     private void showInformation(String title, String text) {

@@ -72,7 +72,7 @@ public class PersonOverviewController {
 
     public void setTranslators(List<Translator> translators) {
         mTranslators = new ArrayList<Translator>(translators);
-        translatorObservableList.addAll(mTranslators);
+        getTranslatorsForName("");
     }
 
     /**
@@ -141,7 +141,7 @@ public class PersonOverviewController {
         spitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(final ActionEvent e) {
-                main.spitDatabase();
+                updateAndSaveDb();
             }
         });
         languageFilter.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -199,7 +199,8 @@ public class PersonOverviewController {
     private void handleDeleteTranslator() {
         int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            personTable.getItems().remove(selectedIndex);
+            mTranslators.remove(personTable.getItems().remove(selectedIndex));
+            getTranslatorsForFilter("");
         } else {
             // Nothing selected.
             Dialogs.create().title("No Selection").masthead("No Translator Selected")
@@ -215,7 +216,8 @@ public class PersonOverviewController {
         Translator tempTranslator = new Translator();
         boolean okClicked = main.showTranslatorEditDialog(tempTranslator);
         if (okClicked) {
-            translatorObservableList.add(tempTranslator);
+            mTranslators.add(tempTranslator);
+            getTranslatorsForFilter("");
         }
     }
 
@@ -231,6 +233,8 @@ public class PersonOverviewController {
             if (okClicked) {
                 int addedAt = 0;
                 // FIXME force update
+                mTranslators.remove(selectedTranslator);
+                mTranslators.add(selectedTranslator);
                 for (int i = 0; i < translatorObservableList.size(); i++) {
                     Translator trans = translatorObservableList.get(i);
                     if (selectedTranslator == trans) {
@@ -267,15 +271,19 @@ public class PersonOverviewController {
         alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            mTranslators.clear();
-            mTranslators.addAll(mTranslators);
-            main.spitDatabase();
+            updateAndSaveDb();
             main.showMailSpitter();
         } else if (result.get() == buttonTypeTwo) {
             main.showMailSpitter();
         } else {
             // ... user chose CANCEL or closed the dialog
         }
+    }
+
+    private void updateAndSaveDb() {
+        main.getTranslators().clear();
+        main.getTranslators().addAll(mTranslators);
+        main.spitDatabaseIfAvailable();
     }
 
     private void getTranslatorsForName(String text) {
@@ -301,6 +309,8 @@ public class PersonOverviewController {
                 }
             }
         });
+        languageFilter.setText("");
+        nameFilter.setText(text);
     }
 
     private void getTranslatorsForFilter(String textField) {
@@ -324,5 +334,7 @@ public class PersonOverviewController {
                 }
             }
         });
+        languageFilter.setText(textField);
+        nameFilter.setText("");
     }
 }
