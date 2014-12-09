@@ -98,20 +98,6 @@ public class PersonOverviewController {
                     }
                 });
         personTable.setItems(translatorObservableList);
-        // openButton.setText("Load JSON database...");
-        // openButton.setOnAction(new EventHandler<ActionEvent>() {
-        // @Override
-        // public void handle(final ActionEvent e) {
-        // FileChooser fileChooser = new FileChooser();
-        // fileChooser.setTitle("Choose your JSON database");
-        // fileChooser.getExtensionFilters().add(
-        // new FileChooser.ExtensionFilter("JSON file(*.json)", "*.json"));
-        // File file = fileChooser.showOpenDialog(main.getStage());
-        // if (file != null) {
-        // loadDatabase(file);
-        // }
-        // }
-        // });
         returnButton.setText("<== Return to email spitter");
         returnButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -149,7 +135,6 @@ public class PersonOverviewController {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case ENTER:
-                        nameFilter.setText("");
                         getTranslatorsForFilter(languageFilter.getText());
                         break;
                     default:
@@ -162,7 +147,6 @@ public class PersonOverviewController {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case ENTER:
-                        languageFilter.setText("");
                         getTranslatorsForName(nameFilter.getText());
                         break;
                     default:
@@ -316,8 +300,15 @@ public class PersonOverviewController {
     private void getTranslatorsForFilter(String textField) {
         translatorObservableList.clear();
         for (Translator translator : mTranslators) {
-            if (textField == null || textField.equalsIgnoreCase("")
-                    || (translator.getLanguages().contains(textField))) {
+            if (textField != null && !textField.equalsIgnoreCase("")) {
+                final String sanitizedText = textField.toLowerCase().replace(" ", "");
+                for(String lang: translator.getLanguages()){
+                    if (lang.toLowerCase().replace(" ", "").contains(sanitizedText)) {
+                        translatorObservableList.add(translator);
+                        break;
+                    }
+                }
+            } else {
                 translatorObservableList.add(translator);
             }
         }

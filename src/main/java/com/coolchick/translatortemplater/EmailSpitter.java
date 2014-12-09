@@ -36,10 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by Paco on 08/12/2014. See LICENSE.md
@@ -253,7 +250,7 @@ public class EmailSpitter {
         translatorsTarget.clear();
         languageFilter.setText("");
         nameFilter.setText("");
-        ArrayList<String> names = new ArrayList<String>();
+        HashSet<String> names = new HashSet<String>();
         for (Translator trans : main.getTranslators()) {
             names.add(trans.getName());
         }
