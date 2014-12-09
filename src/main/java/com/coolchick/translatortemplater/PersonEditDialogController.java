@@ -15,9 +15,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 /**
- * Dialog to edit details of a translator.
- * 
- * @author Marco Jakob
+ * Created by Paco on 08/12/2014. See LICENSE.md
  */
 public class PersonEditDialogController {
     @FXML

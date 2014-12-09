@@ -6,6 +6,9 @@ import javafx.scene.input.TouchEvent;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.shape.Arc;
 
+/**
+ * Created by Paco on 08/12/2014. See LICENSE.md
+ */
 public class Controller {
     public void onRotate(RotateEvent re) {
         Arc a = (Arc)re.getSource();

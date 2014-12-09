@@ -22,6 +22,9 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 
+/**
+ * Created by Paco on 08/12/2014. See LICENSE.md
+ */
 public class LanguageOverview {
     private TableView<StringWrapper> table = new TableView<StringWrapper>();
 

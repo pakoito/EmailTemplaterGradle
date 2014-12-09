@@ -21,6 +21,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Created by Paco on 08/12/2014. See LICENSE.md
+ */
 public class PersonOverviewController {
     private List<Translator> mTranslators;
 

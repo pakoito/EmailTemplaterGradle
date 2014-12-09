@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Created by Paco on 08/12/2014. See LICENSE.md
+ */
 public class Main extends Application {
     private Stage primaryStage;
 
