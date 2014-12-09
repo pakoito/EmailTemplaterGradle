@@ -123,10 +123,9 @@ public class LanguageOverview {
             }
         });
         final VBox vbox = new VBox();
-        vbox.setSpacing(5);
+        vbox.setSpacing(10);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(returnButton, label, table, hb, spitButton);
-
         ((Group)scene.getRoot()).getChildren().addAll(vbox);
         updateObservable();
         table.setItems(observableList);

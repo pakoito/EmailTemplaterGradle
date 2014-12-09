@@ -41,6 +41,12 @@ public class PersonEditDialogController {
 
     private ObservableList<String> languagesTarget;
 
+    private Main main;
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
     /**
      * Initializes the controller class. This method is automatically called after the fxml file has
      * been loaded.
@@ -69,7 +75,7 @@ public class PersonEditDialogController {
         emailField.setText(translator.getEmail());
         languagesTarget = FXCollections.observableArrayList(translator.getLanguages());
         languagesField.setTargetItems(languagesTarget);
-        HashSet<String> langs = new HashSet<String>(languages);
+        HashSet<String> langs = new HashSet<String>(main.getLanguages());
         langs.removeAll(translator.getLanguages());
         this.languages = langs;
         languagesObservableList = FXCollections.observableArrayList(langs);

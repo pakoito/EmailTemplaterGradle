@@ -110,6 +110,7 @@ public class Main extends Application {
             // Set the person into the controller.
             PersonEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
+            controller.setMain(this);
             controller.setTranslator(person);
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
