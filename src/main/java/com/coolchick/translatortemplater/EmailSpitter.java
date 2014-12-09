@@ -186,7 +186,9 @@ public class EmailSpitter {
                         new FileChooser.ExtensionFilter("Email draft(*.eml)", "*.eml"));
                 File file = fileChooser.showSaveDialog(mStage.get());
                 if (file != null) {
+                    FileOutputStream fileOutputStream = null;
                     try {
+                        fileOutputStream = new FileOutputStream(file);
                         Properties properties = System.getProperties();
                         Session session = Session.getDefaultInstance(properties);
                         MimeMessage message = new MimeMessage(session);
@@ -205,7 +207,6 @@ public class EmailSpitter {
                         message.addHeaderLine("X-Unsent: 1");
                         message.setSubject("Sending email for languages: " + languagesTarget);
                         message.setContent("<h1>This is actual message</h1>", "text/html");
-                        FileOutputStream fileOutputStream = new FileOutputStream(file);
                         message.writeTo(fileOutputStream);
                         fileOutputStream.close();
                         openFile(file);
@@ -216,6 +217,14 @@ public class EmailSpitter {
                     } catch (IOException e1) {
                         showErrorDialog(mStage.get(),
                                 "File type unknown, please open it externally");
+                    } finally {
+                        try {
+                            if (fileOutputStream != null) {
+                                fileOutputStream.close();
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             }
