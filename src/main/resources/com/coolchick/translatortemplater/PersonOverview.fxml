@@ -76,6 +76,7 @@
                     </AnchorPane>
                 </items>
             </SplitPane>
+            <GridPane fx:id="filterGrid"/>
         </VBox>
     </children>
 </StackPane>
