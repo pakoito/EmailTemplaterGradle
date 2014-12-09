@@ -201,11 +201,13 @@ public class EmailSpitter {
                                 new InternetAddress(from)
                             });
                         }
-                        message.addRecipients(Message.RecipientType.BCC, addresses);
+                        message.addRecipients(Message.RecipientType.CC, addresses);
                         message.addHeaderLine("X-Unsent: 1");
                         message.setSubject("Sending email for languages: " + languagesTarget);
                         message.setContent("<h1>This is actual message</h1>", "text/html");
-                        message.writeTo(new FileOutputStream(file));
+                        FileOutputStream fileOutputStream = new FileOutputStream(file);
+                        message.writeTo(fileOutputStream);
+                        fileOutputStream.close();
                         openFile(file);
                     } catch (MessagingException e1) {
                         showErrorDialog(mStage.get(), "Failed to open file\n" + e1);
