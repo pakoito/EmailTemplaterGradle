@@ -198,7 +198,7 @@ public class EmailSpitter {
                         String from = emailField.getText();
                         if (from != null && !"".equalsIgnoreCase(from)) {
                             message.addFrom(new Address[] {
-                                new InternetAddress()
+                                new InternetAddress(from)
                             });
                         }
                         message.addRecipients(Message.RecipientType.BCC, addresses);
